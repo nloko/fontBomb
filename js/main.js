@@ -211,7 +211,8 @@
       this.body = document.getElementsByTagName("body")[0];
       if ((_ref2 = this.body) != null) {
         _ref2.onclick = function(event) {
-          return _this.dropBomb(event);
+          //return _this.dropBomb(event);
+          return _this.randomlyDropBomb(event, 5);
         };
       }
       this.body.addEventListener("touchstart", function(event) {
@@ -328,9 +329,29 @@
       return chars.join(' ');
     };
 
-    Explosion.prototype.dropBomb = function(event) {
+    Explosion.prototype.randomlyDropBomb = function(event, times) {
+      var times = times || 1;
+      this.dropBomb(event);
+      for (var i = 0; i < times; i++) {
+        (function(self) { 
+          setTimeout(function() { 
+            var x = Math.random() * window.innerWidth + window.scrollX;
+            var y = Math.random() * window.innerHeight + window.scrollY;
+            self.dropBomb(event, x, y); 
+          }, 250 * i); 
+        })(this);
+      }
+    };
+
+    Explosion.prototype.dropBomb = function(event, x, y) {
       var pos;
-      pos = window.findClickPos(event);
+      if (typeof x !== 'undefined' && typeof y !== 'undefined') {
+        pos = {};
+        pos.x = x;
+        pos.y = y;
+      } else {
+        pos = window.findClickPos(event);
+      }
       this.bombs.push(new Bomb(pos.x, pos.y));
       if (window.FONTBOMB_PREVENT_DEFAULT) return event.preventDefault();
     };
