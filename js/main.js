@@ -331,16 +331,27 @@
 
     Explosion.prototype.randomlyDropBomb = function(event, times) {
       var times = times || 1;
+      var wh = window.innerHeight || document.documentElement.clientHeight;
+      var ww = window.innerWidth || document.documentElement.clientWidth;
+      var scrollLeft = (window.pageXOffset !== undefined) ? 
+        window.pageXOffset : 
+        (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+      var scrollTop = (window.pageYOffset !== undefined) ? 
+        window.pageYOffset : 
+        (document.documentElement || document.body.parentNode || document.body).scrollTop;
+      
       this.dropBomb(event);
+      
       for (var i = 0; i < times; i++) {
         (function(self) { 
           setTimeout(function() { 
-            var x = Math.random() * window.innerWidth + window.scrollX;
-            var y = Math.random() * window.innerHeight + window.scrollY;
+            var x = Math.random() * ww + scrollLeft
+            var y = Math.random() * wh + scrollTop;
             self.dropBomb(event, x, y); 
           }, 250 * i); 
         })(this);
       }
+
     };
 
     Explosion.prototype.dropBomb = function(event, x, y) {
